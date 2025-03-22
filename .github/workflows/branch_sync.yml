@@ -93,7 +93,7 @@ jobs:
           }
         }
   deploy:
-    if: needs.prepare.outputs.sync == 'true' && !failure('macOS', 'linux-pkg') && !cancelled()
+    if: needs.prepare.outputs.sync == 'true' && needs.macOS.result == 'success' && needs.linux-pkg.result == 'success' && !cancelled()
     needs:
     - prepare
     - linux-AppImage
@@ -126,7 +126,7 @@ jobs:
   publish:
     needs: deploy
     # this should also run if linux packages fail, since we don't upload those anyway
-    if: needs.prepare.outputs.sync == 'true' && !failure('macOS') && !cancelled()
+    if: needs.prepare.outputs.sync == 'true' && needs.macOS.result == 'success' && !cancelled()
     permissions: write-all
     runs-on: ubuntu-latest
     env:
