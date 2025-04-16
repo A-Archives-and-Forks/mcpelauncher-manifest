@@ -167,7 +167,7 @@ jobs:
         LAUNCHER_RELEASE_DESCRIPTION="${LAUNCHER_RELEASE_DESCRIPTION}Last Updated on $(date)
         "
         for file in *; do
-          if [[ "$file" =~ \.AppImage$ && "$file" =~ \.dmg$ ]]
+          if [[ "$file" =~ \.AppImage$ ]] || [[ "$file" =~ \.dmg$ ]]
           then
             LAUNCHER_RELEASE_DESCRIPTION="$LAUNCHER_RELEASE_DESCRIPTION- [$file](${{ github.server_url }}/${{ steps.setup-vars.outputs.owner }}/${{ steps.setup-vars.outputs.repo }}/releases/download/nightly/$file)
         "
