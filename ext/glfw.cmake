@@ -10,9 +10,13 @@ FetchContent_Declare(
         URL "https://github.com/minecraft-linux/glfw/archive/fce9121962bc0a21c39e2d6f8e08bad30c566c72.zip"
 )
 
-FetchContent_GetProperties(glfw3_ext)
-if(NOT glfw3_ext_POPULATED)
-  FetchContent_Populate(glfw3_ext)
-  add_subdirectory(${glfw3_ext_SOURCE_DIR} ${glfw3_ext_BINARY_DIR})
+
+if(POLICY CMP0169)
+  FetchContent_MakeAvailable(glfw3_ext)
+else()
+  if(NOT glfw3_ext_POPULATED)
+    FetchContent_Populate(glfw3_ext)
+    add_subdirectory(${glfw3_ext_SOURCE_DIR} ${glfw3_ext_BINARY_DIR})
+  endif()
 endif()
 add_library(glfw3 ALIAS glfw)
