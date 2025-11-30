@@ -144,6 +144,8 @@ if (BUILD_CLIENT)
     add_subdirectory(minecraft-imported-symbols)
     add_subdirectory(mcpelauncher-common)
     add_subdirectory(mcpelauncher-core)
+    add_subdirectory(mcpelauncher-apkinfo)
+    add_subdirectory(axml-parser)
 endif()
 
 if (BUILD_CLIENT)
