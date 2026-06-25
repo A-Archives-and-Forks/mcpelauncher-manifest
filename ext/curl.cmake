@@ -5,12 +5,16 @@ if (NOT CURL_EXT_EXTRA_OPTIONS)
 endif()
 
 if (APPLE)
-    list(APPEND CURL_EXT_EXTRA_OPTIONS "-DCURL_USE_SECTRANSP=ON")
-else()
-    find_package(OpenSSL REQUIRED COMPONENTS SSL Crypto)
-    if (DEFINED OPENSSL_ROOT_DIR)
-        list(APPEND CURL_EXT_EXTRA_OPTIONS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}")
-    endif()
+    list(APPEND CURL_EXT_EXTRA_OPTIONS
+        "-DCURL_USE_OPENSSL=ON"
+        "-DUSE_APPLE_SECTRUST=ON"
+        "-DCURL_CA_BUNDLE=none"
+        "-DCURL_CA_PATH=none")
+endif()
+
+find_package(OpenSSL REQUIRED COMPONENTS SSL Crypto)
+if (DEFINED OPENSSL_ROOT_DIR)
+    list(APPEND CURL_EXT_EXTRA_OPTIONS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}")
 endif()
 if (DEFINED CMAKE_TOOLCHAIN_FILE)
     list(APPEND CURL_EXT_EXTRA_OPTIONS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
@@ -19,7 +23,7 @@ endif()
 if(OWN_CURL_SOURCE_DIR)
     set(CURL_EXT_PROPERTIES SOURCE_DIR ${OWN_CURL_SOURCE_DIR})
 else()
-    set(CURL_EXT_PROPERTIES URL "http://curl.haxx.se/download/curl-8.0.1.tar.gz")
+    set(CURL_EXT_PROPERTIES URL "https://curl.se/download/curl-8.21.0.tar.gz")
 endif()
 
 # -DCMAKE_INSTALL_LIBDIR=lib is required to find libcurl.a on fedora, default is lib64
@@ -36,7 +40,7 @@ add_dependencies(curl curl_ext)
 set_property(TARGET curl PROPERTY IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/ext/curl/lib/libcurl.a)
 set_property(TARGET curl PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_BINARY_DIR}/ext/curl/include/)
 if (APPLE)
-    set_property(TARGET curl PROPERTY INTERFACE_LINK_LIBRARIES "-framework SystemConfiguration -framework Security -framework CoreFoundation")
+    set_property(TARGET curl PROPERTY INTERFACE_LINK_LIBRARIES "OpenSSL::SSL;OpenSSL::Crypto;-framework SystemConfiguration;-framework Security;-framework CoreFoundation")
 else()
     set_property(TARGET curl PROPERTY INTERFACE_LINK_LIBRARIES OpenSSL::SSL OpenSSL::Crypto)
 endif()
